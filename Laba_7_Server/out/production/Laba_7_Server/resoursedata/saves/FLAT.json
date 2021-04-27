@@ -1,0 +1,69 @@
+{
+  "6": {
+    "id": 1,
+    "name": "wow",
+    "coordinates": {
+      "x": 150.0,
+      "y": 10.0
+    },
+    "creationDate": "Mar 2, 2021 2:51:32 PM",
+    "area": 45,
+    "numberOfRooms": 8,
+    "numberOfBathrooms": 2,
+    "timeToMetroOnFoot": 1500,
+    "furnish": "NONE",
+    "house": {
+      "name": "CasualHouse",
+      "year": 2014,
+      "numberOfFlatsOnFloor": 9,
+      "numberOfLifts": 2
+    }
+  },
+  "8": {
+    "id": 2,
+    "name": "Home",
+    "area": 160,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "10": {
+    "id": 3,
+    "name": "HouseFlat",
+    "area": 150,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "12": {
+    "id": 6,
+    "name": "param",
+    "coordinates": {
+      "x": 109.0,
+      "y": 311.0
+    },
+    "creationDate": "Mar 9, 2021 12:22:25 PM",
+    "area": 15,
+    "numberOfBathrooms": 14,
+    "timeToMetroOnFoot": 1500,
+    "furnish": "BAD",
+    "house": {
+      "name": "old",
+      "year": 1980,
+      "numberOfFlatsOnFloor": 12,
+      "numberOfLifts": 2
+    }
+  },
+  "15": {
+    "id": 4,
+    "name": "BestFlat",
+    "area": 100,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "213": {
+    "id": 5,
+    "name": "flat",
+    "area": 1000,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  }
+}

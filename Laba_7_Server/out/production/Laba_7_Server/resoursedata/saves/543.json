@@ -1,0 +1,30 @@
+{
+  "8": {
+    "id": 1,
+    "name": "big",
+    "area": 160,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "10": {
+    "id": 2,
+    "name": "lol",
+    "area": 150,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "15": {
+    "id": 3,
+    "name": "small",
+    "area": 100,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  },
+  "213": {
+    "id": 4,
+    "name": "privet",
+    "area": 1000,
+    "numberOfBathrooms": 0,
+    "timeToMetroOnFoot": 0
+  }
+}
