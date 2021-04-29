@@ -1,4 +1,4 @@
-package data.dao;
+package data.dao.exceptions;
 
 public class InitDAOException extends Exception {
     public InitDAOException() {

@@ -12,6 +12,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -28,17 +29,37 @@ public class Server {
     public Server(int port, Scanner scanner) {
         PORT = port;
         this.scanner = scanner;
-
         initDAO();
     }
 
     private void initDAO() {
-        databaseManager = new DBManager(DB_URL);
+        Console autorization = System.console();
+        autorization.printf("Enter the username: ");
+        String usernameServer = autorization.readLine();
+        autorization.printf("Enter the password: ");
+        String passwordServer = new String(autorization.readPassword());
+        databaseManager = DBManager.getInstance(DB_URL, passwordServer, usernameServer);
     }
 
     public void run() {
-        myMap = StartWorkWithCollection.initialization();
+        // Trying to access to database
         try {
+            databaseManager.connectToDatabase();
+            System.out.println("Connection to database was successful");
+        } catch (SQLException e) {
+            System.out.println("Error with connecting to database, exiting from app");
+            System.exit(-2);
+        }
+
+        // Start working with collection
+        try {
+            myMap = StartWorkWithCollection.initialization();
+            System.out.println("Now you can work with collection");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*try {
             socket = new DatagramSocket(2467);
 
             Runnable userInput = () -> {
@@ -71,7 +92,7 @@ public class Server {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-
+        */
     }
 
     public void clientRequest()
