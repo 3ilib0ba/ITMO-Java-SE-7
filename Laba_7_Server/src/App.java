@@ -6,8 +6,6 @@ public class App {
     public static void main(String[] args) {
         StartWorkWithCollection.initialization();
 
-
-
         Scanner scanner = new Scanner(System.in);
         System.out.println("Server is running");
 

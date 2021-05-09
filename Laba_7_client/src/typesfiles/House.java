@@ -12,6 +12,7 @@ public class House implements Serializable {
     private Integer numberOfLifts; //Значение поля должно быть больше 0
 
     public House(){
+
     }
 
     /**

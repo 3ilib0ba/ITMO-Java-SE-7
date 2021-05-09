@@ -42,7 +42,7 @@ public class Request implements Serializable {
     }
 
     public Object getObjectArgument() {
-        return objectArgument == null ? "null" : objectArgument;
+        return objectArgument;
     }
 
     public boolean isEmpty() {

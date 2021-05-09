@@ -23,7 +23,7 @@ public class Server {
 
     private Scanner scanner;
     private MyTreeMap myMap;
-    private static final String DB_URL = "jdbc:postgresql://localhost:9770/studs";
+    private static final String DB_URL = "jdbc:postgresql://localhost:9999/studs";
     private DBManager databaseManager;
 
     public Server(int port, Scanner scanner) {
@@ -34,11 +34,20 @@ public class Server {
 
     private void initDAO() {
         Console autorization = System.console();
-        autorization.printf("Enter the username: ");
-        String usernameServer = autorization.readLine();
-        autorization.printf("Enter the password: ");
-        String passwordServer = new String(autorization.readPassword());
-        databaseManager = DBManager.getInstance(DB_URL, passwordServer, usernameServer);
+        if (autorization != null) {
+            autorization.printf("Enter the username: ");
+            String usernameServer = autorization.readLine();
+            autorization.printf("Enter the password: ");
+            String passwordServer = new String(autorization.readPassword());
+            databaseManager = DBManager.getInstance(DB_URL, passwordServer, usernameServer);
+        } else {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter the username: ");
+            String usernameServer = scanner.nextLine();
+            System.out.println("Enter the password: ");
+            String passwordServer = scanner.nextLine();
+            databaseManager = DBManager.getInstance(DB_URL, passwordServer, usernameServer);
+        }
     }
 
     public void run() {
@@ -58,6 +67,21 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Load all collection from DB to this app
+        try {
+            databaseManager.loadFullCollection(myMap);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Trying to add a new client
+        /*try {
+            databaseManager.insertNewClient("aboba", "aboba");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+
 
         /*try {
             socket = new DatagramSocket(2467);
