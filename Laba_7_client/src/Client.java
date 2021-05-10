@@ -1,4 +1,3 @@
-import commands.Execute;
 import commands.exceptions.ExitException;
 import data.netdata.Report;
 import data.netdata.Request;
@@ -24,10 +23,26 @@ public class Client {
     private ByteBuffer byteBuffer = ByteBuffer.allocate(16384);
     private Scanner scanner;
 
+    private String loginClient;
+    private String passwordClient;
+
     public Client(String host, int port, Scanner scanner) {
         this.host = host;
         this.port = port;
         this.scanner = scanner;
+
+        initClient();
+    }
+
+    private void initClient() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the username: ");
+        String username = scanner.nextLine();
+        System.out.println("Enter the password: ");
+        String password = scanner.nextLine();
+
+        loginClient = username;
+        passwordClient = ExecuteRequest.hashPassword(password);
     }
 
     public void run() {
@@ -43,7 +58,8 @@ public class Client {
 
 
             while (true) {
-                request = null; // new initialization
+                request = new Request(); // new initialization
+
                 try {
                     sendRequest(request);
                 } catch (ExitException e) {
@@ -73,9 +89,10 @@ public class Client {
 
     private void sendRequest(Request request)
             throws IOException {
-
         try {
             request = ExecuteRequest.doingRequest();
+            request.setLoginClient(loginClient);        // with login
+            request.setPasswordClient(passwordClient);  // and password
         } catch (ExitException e) {
             throw e;
         } catch (RuntimeException e) {
@@ -143,7 +160,7 @@ public class Client {
         return response;
     }
 
-    private Report receive() throws IOException, ClassNotFoundException {
+    /*private Report receive() throws IOException, ClassNotFoundException {
         DatagramChannel channel = null;
         while (channel == null) {
             selector.select();
@@ -160,4 +177,6 @@ public class Client {
         }
         return deserialize();
     }
+
+     */
 }

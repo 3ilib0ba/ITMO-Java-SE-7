@@ -15,26 +15,25 @@ public abstract class ExecuteRequest {
     public static StringBuilder answer = new StringBuilder();
 
     public static Report doingRequest(Request request, MyTreeMap myMap) {
-        System.out.println("Entering the command: " + request.getCommandName());
+        System.out.println("Entering the command: " + request.getCommandName() +
+                            ", FROM: " + request.getLoginClient());
 
         StringBuilder fullRequest = new StringBuilder(request.getCommandName() + " " + request.getArgument());
         scannerOfCommands = new Scanner(fullRequest.toString());
 
-        ReportState stateAnswer = ReportState.OK;
+        ReportState stateAnswer;
         answer = new StringBuilder();
         try {
             Execute.execute(false, myMap, scannerOfCommands,
                     request.getObjectArgument() == "null" ? null : (Flat) request.getObjectArgument());
             stateAnswer = ReportState.OK;
         } catch (ExitException e) {
-            stateAnswer = ReportState.SERVER_DIE;
             answer.append("Server isn't worked now");
             throw e;
         } catch (Exception e) {
             stateAnswer = ReportState.ERROR;
             answer.append(e.getMessage());
         }
-
 
         return makeReport(stateAnswer, answer);
     }

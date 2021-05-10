@@ -75,17 +75,11 @@ public class Server {
             e.printStackTrace();
         }
 
-        // Trying to add a new client
-        /*try {
-            databaseManager.insertNewClient("aboba", "aboba");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
-
-
-        /*try {
+        // Start working with requests
+        try {
             socket = new DatagramSocket(2467);
 
+            // Console thread to shut down the server
             Runnable userInput = () -> {
                 try {
                     while (true) {
@@ -116,11 +110,12 @@ public class Server {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        */
+
     }
 
     public void clientRequest()
             throws ExitException {
+        // initialization
         Request request = null;
         Report report = null;
 
@@ -128,27 +123,23 @@ public class Server {
             byte[] accept = new byte[16384];
             DatagramPacket getPacket = new DatagramPacket(accept, accept.length);
 
-            //Getting a new request from client and doing it
+            //Getting a new request from client
             socket.receive(getPacket);
-
             //Save path to client
             address = getPacket.getAddress();
             PORT = getPacket.getPort();
 
             //invoke the command
             request = deserialize(getPacket);
+            System.out.println(request.getLoginClient());
             report = ExecuteRequest.doingRequest(request, myMap);
-
-
         } catch (ExitException e) {
             throw e;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             //Sending a report to client
-            byte[] sendBuffer = new byte[0];
+            byte[] sendBuffer;
             try {
                 sendBuffer = serialize(report);
                 DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, address, PORT);
@@ -162,10 +153,10 @@ public class Server {
         }
     }
 
-    private <T> T deserialize(DatagramPacket getPacket) throws IOException, ClassNotFoundException {
+    private Request deserialize(DatagramPacket getPacket) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(getPacket.getData());
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        T request = (T) objectInputStream.readObject();
+        Request request = (Request) objectInputStream.readObject();
         byteArrayInputStream.close();
         objectInputStream.close();
         return request;

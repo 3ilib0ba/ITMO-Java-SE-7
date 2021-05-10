@@ -3,7 +3,9 @@ package data.netdata;
 import java.io.Serializable;
 
 public class Request implements Serializable {
-    private ClientIdentificate client;
+    private String loginClient;
+    private String passwordClient;
+
     private String commandName;
     private String argument;
     private Serializable objectArgument;
@@ -12,13 +14,6 @@ public class Request implements Serializable {
         this.commandName = commandName;
         this.argument = argument;
         this.objectArgument = objectArgument;
-    }
-
-    public Request(String commandName, String argument, Serializable objectArgument, ClientIdentificate client) {
-        this.commandName = commandName;
-        this.argument = argument;
-        this.objectArgument = objectArgument;
-        this.client = client;
     }
 
     public Request(String commandName, String argument) {
@@ -33,6 +28,14 @@ public class Request implements Serializable {
         this.objectArgument = null;
     }
 
+    public void setLoginClient(String loginClient) {
+        this.loginClient = loginClient;
+    }
+
+    public void setPasswordClient(String passwordClient) {
+        this.passwordClient = passwordClient;
+    }
+
     public String getCommandName() {
         return commandName;
     }
@@ -42,10 +45,28 @@ public class Request implements Serializable {
     }
 
     public Object getObjectArgument() {
-        return objectArgument == null ? "null" : objectArgument;
+        return objectArgument;
+    }
+
+    public String getLoginClient() {
+        return loginClient;
+    }
+
+    public String getPasswordClient() {
+        return passwordClient;
     }
 
     public boolean isEmpty() {
         return commandName.isEmpty() && argument.isEmpty() && objectArgument == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "loginClient='" + loginClient + '\'' +
+                ", commandName='" + commandName + '\'' +
+                ", argument='" + argument + '\'' +
+                ", objectArgument=" + objectArgument +
+                '}';
     }
 }

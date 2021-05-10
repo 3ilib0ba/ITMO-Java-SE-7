@@ -1,7 +1,6 @@
 package data.dao;
 
 import collectionofflats.MyTreeMap;
-import data.netdata.ClientIdentificate;
 import typesfiles.Coordinates;
 import typesfiles.Flat;
 import typesfiles.Furnish;
@@ -126,7 +125,6 @@ public class DBManager {
         PreparedStatement sqlOfLoad = connection.prepareStatement(LOAD_COLLECTION_REQUEST);
         ResultSet collectionDB = sqlOfLoad.executeQuery();
 
-        int key = 1;
         while (collectionDB.next()) {
             /*System.out.println("id = " + collectionDB.getString(1) + "\n" +
                     "name = " + collectionDB.getString(2) + "\n" +
@@ -150,11 +148,11 @@ public class DBManager {
                     "number of lifts = " + collectionDB.getString(20) + "\n" +
                     "number of flats = " + collectionDB.getString(21) + "\n");
             */
-            mapManager.addFlat(key++, parseToFlat(collectionDB));
+            mapManager.addFlat(MyTreeMap.ID_MAX++, parseToFlat(collectionDB));
         }
     }
 
-    public void insertNewFlat(Flat addingFlat, ClientIdentificate client) {
+    public void insertNewFlat(Flat addingFlat) {
 
     }
 }
