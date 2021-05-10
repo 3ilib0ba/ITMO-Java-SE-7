@@ -26,9 +26,9 @@ public abstract class ExecuteRequest {
     }
 
     public static String hashPassword(String password) {
-        String MD5 = password + pepper;
+        String MD5 = password /*+ pepper*/;
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
             MD5 = new String(md.digest(password.getBytes()));
         } catch (NoSuchAlgorithmException e) {
             System.out.println("Problem with hashing! Password isn't hashed");

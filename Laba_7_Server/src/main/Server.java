@@ -1,3 +1,5 @@
+package main;
+
 import collectionofflats.MyTreeMap;
 import collectionofflats.StartWorkWithCollection;
 import commands.Execute;
@@ -23,8 +25,9 @@ public class Server {
 
     private Scanner scanner;
     private MyTreeMap myMap;
+
     private static final String DB_URL = "jdbc:postgresql://localhost:9999/studs";
-    private DBManager databaseManager;
+    public static DBManager databaseManager;
 
     public Server(int port, Scanner scanner) {
         PORT = port;
@@ -87,13 +90,16 @@ public class Server {
                         System.out.println(Arrays.toString(userCommand));
                         if (userCommand[0].equals("save") || userCommand[0].equals("exit")) {
                             if (userCommand[0].equals("save") || userCommand.length == 2) {
-                                Execute.execute(true, myMap, new Scanner("save\n" + userCommand[1] + "\nexit"), null);
+                                Execute.execute(true, myMap,
+                                        new Scanner("save\n" + userCommand[1] + "\nexit"),
+                                        null, null);
                             }
                             if (userCommand[0].equals("exit")) {
-                                Execute.execute(true, myMap, new Scanner("exit"), null);
+                                Execute.execute(true, myMap, new Scanner("exit"),
+                                        null, null);
                             }
                         } else {
-                            System.out.println("Server has command save and command exit as well!");
+                            System.out.println("main.Server has command save and command exit as well!");
                         }
 
                     }
@@ -103,6 +109,7 @@ public class Server {
             Thread thread = new Thread(userInput);
             thread.start();
 
+            // executing request
             while (true) {
                 clientRequest();
             }
@@ -123,16 +130,11 @@ public class Server {
             byte[] accept = new byte[16384];
             DatagramPacket getPacket = new DatagramPacket(accept, accept.length);
 
-            //Getting a new request from client
-            socket.receive(getPacket);
-            //Save path to client
-            address = getPacket.getAddress();
+            socket.receive(getPacket);          //Getting a new request from client
+            address = getPacket.getAddress();   //Save path to client
             PORT = getPacket.getPort();
-
-            //invoke the command
             request = deserialize(getPacket);
-            System.out.println(request.getLoginClient());
-            report = ExecuteRequest.doingRequest(request, myMap);
+            report = ExecuteRequest.doingRequest(request, myMap);   //invoke the command
         } catch (ExitException e) {
             throw e;
         } catch (IOException | ClassNotFoundException e) {

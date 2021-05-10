@@ -5,16 +5,21 @@ import commands.exceptions.ExitException;
 import commands.exceptions.IllegalCommandException;
 import commands.exceptions.InvalidArgExcaption;
 import commands.exceptions.RecursionException;
+import data.dao.exceptions.InvalidPasswordException;
+import data.netdata.ClientIdentificate;
 import typesfiles.Flat;
 
+import static main.Server.databaseManager;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
  * Class with execute all program and all command from console.
  */
 public class Execute {
-    public Execute(boolean isFromFile, MyTreeMap map, Scanner scanner) {
-        execute(isFromFile, map, scanner, null);
+    public Execute(boolean isFromFile, MyTreeMap map, Scanner scanner, ClientIdentificate client) {
+        execute(isFromFile, map, scanner, null, client);
     }
 
     /**
@@ -25,8 +30,26 @@ public class Execute {
      * @param SCANNER    - mod of program
      * @throws ExitException if was invoke exit command
      */
-    public static void execute(boolean isFromFile, MyTreeMap map, Scanner SCANNER, Flat addingFlat)
+    public static void execute(boolean isFromFile, MyTreeMap map, Scanner SCANNER,
+                               Flat addingFlat, ClientIdentificate client)
             throws ExitException {
+
+        // Trying to add a new client or find his id
+        try {
+            client.setIdOfClient(databaseManager.findUser(client.getLogin(), client.getPassword()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (InvalidPasswordException e) {
+            throw e;
+        }
+        if (client.idOfClient == null) {
+            try {
+                databaseManager.insertNewClient(client);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         String command, execCom;
         String[] commands;
 
@@ -77,12 +100,16 @@ public class Execute {
                         throw new IllegalCommandException("Wrong format. Need -> 'insert <key>'");
                     } else {
                         try {
+                            databaseManager.insertNewFlat(addingFlat, client);
+
                             Integer newKey = Integer.parseInt(commands[1]);
                             if (isFromFile) {
                                 new CommandInsert(newKey, map, false, SCANNER);
                             } else {
                                 new CommandInsert(newKey, map, false, addingFlat);
                             }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         } catch (NumberFormatException e) {
                             throw new InvalidArgExcaption("type key - Integer");
                         }
@@ -97,6 +124,11 @@ public class Execute {
                     } else {
                         try {
                             int idUpd = Integer.parseInt(commands[1]);
+                            try {
+                                databaseManager.updateFlatById(addingFlat, client, idUpd);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                             if (isFromFile) {
                                 new CommandUpdate(idUpd, map, SCANNER);
                             } else {
@@ -152,7 +184,7 @@ public class Execute {
                 case "execute_script":
                     if (commands.length == 2) {
                         try {
-                            new ExecuteScript(map, commands[1]);
+                            new ExecuteScript(map, commands[1], client);
                         } catch (RecursionException e) {
                             System.out.println(e.getMessage());
                         }

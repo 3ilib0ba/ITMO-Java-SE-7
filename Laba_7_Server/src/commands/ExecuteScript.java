@@ -2,6 +2,7 @@ package commands;
 
 import commands.exceptions.RecursionException;
 import collectionofflats.MyTreeMap;
+import data.netdata.ClientIdentificate;
 
 import java.io.*;
 import java.util.Scanner;
@@ -13,7 +14,7 @@ import java.util.TreeSet;
 public class ExecuteScript {
     public static TreeSet<File> openFiles = new TreeSet<>();
 
-    public ExecuteScript(MyTreeMap map, String path)
+    public ExecuteScript(MyTreeMap map, String path, ClientIdentificate client)
             throws RecursionException {
         try {
             File thisScript = new File(path);
@@ -34,7 +35,7 @@ public class ExecuteScript {
 
 
                 HistoryCommand.addHistory("execute_script START");
-                new Execute(true, map, scanOfExecuteFile);
+                new Execute(true, map, scanOfExecuteFile, client);
                 HistoryCommand.addHistory("execute_script END");
             }
         } catch (FileNotFoundException e) {
