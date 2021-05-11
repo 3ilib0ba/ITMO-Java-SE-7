@@ -41,7 +41,7 @@ public class CommandUpdate {
      * @return id of object if it in the collection
      * @throws InvalidArgExcaption if id hadn't found
      */
-    private Integer checkId(int searchId, TreeMap<Integer, Flat> map)
+    private Integer checkId(int searchId, Map<Integer, Flat> map)
             throws InvalidArgExcaption {
         for (Map.Entry<Integer, Flat> entry : map.entrySet()) {
             int id = entry.getValue().getId();

@@ -2,17 +2,22 @@ package collectionofflats;
 
 import typesfiles.Flat;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Class that implements a storage with objects
  */
 public class MyTreeMap {
-    private final TreeMap<Integer, Flat> MyMap;
+
+    private Map<Integer, Flat> MyMap;
     public static int ID_MAX = 1;
 
     public MyTreeMap() {
         MyMap = new TreeMap<>();
+        MyMap = Collections.synchronizedMap(MyMap);
     }
 
     /**
@@ -33,7 +38,7 @@ public class MyTreeMap {
      * function for getting map
      * @return map with objects
      */
-    public TreeMap<Integer, Flat> getMyMap() {
+    public Map<Integer, Flat> getMyMap() {
         return MyMap;
     }
 

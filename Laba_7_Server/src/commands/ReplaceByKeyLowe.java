@@ -4,13 +4,14 @@ import commands.exceptions.IllegalCommandException;
 import data.workwithrequest.ExecuteRequest;
 import typesfiles.Flat;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Class for replacing a flat with less key
  */
 public class ReplaceByKeyLowe {
-    public ReplaceByKeyLowe(TreeMap<Integer, Flat> map, Integer key, long area) {
+    public ReplaceByKeyLowe(Map<Integer, Flat> map, Integer key, long area) {
         if (map.containsKey(key)) {
             replacing(map, key, area);
         } else {
@@ -24,7 +25,7 @@ public class ReplaceByKeyLowe {
      * @param key - key of object
      * @param area - area of compare
      */
-    private void replacing(TreeMap<Integer, Flat> map, Integer key, long area){
+    private void replacing(Map<Integer, Flat> map, Integer key, long area){
         if (map.get(key).getArea() > area) {
             map.get(key).setArea(area);
             ExecuteRequest.answer.append("Ok");

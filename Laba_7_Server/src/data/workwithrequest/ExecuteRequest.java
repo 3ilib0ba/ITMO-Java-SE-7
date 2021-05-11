@@ -14,8 +14,11 @@ import java.util.Scanner;
 public abstract class ExecuteRequest {
     private static Scanner scannerOfCommands;
     public static StringBuilder answer = new StringBuilder();
+    private static ReportState stateAnswer;
 
-    public static Report doingRequest(Request request, MyTreeMap myMap) {
+    public static void doingRequest(Request request, MyTreeMap myMap) {
+        answer = new StringBuilder("");
+        stateAnswer = ReportState.OK;
         System.out.println("Entering the command: " + request.getCommandName() +
                             ", FROM: " + request.getLoginClient());
 
@@ -23,7 +26,7 @@ public abstract class ExecuteRequest {
         scannerOfCommands = new Scanner(fullRequest.toString());
         ClientIdentificate aboutClient = new ClientIdentificate(request.getLoginClient(), request.getPasswordClient());
 
-        ReportState stateAnswer;
+
         answer = new StringBuilder();
 
         try {
@@ -37,12 +40,10 @@ public abstract class ExecuteRequest {
             stateAnswer = ReportState.ERROR;
             answer.append(e.getMessage());
         }
-
-        return makeReport(stateAnswer, answer);
     }
 
-    public static Report makeReport(ReportState state, StringBuilder body) {
-        Report reportToClient = new Report(state, body.toString());
+    public static Report makeReport() {
+        Report reportToClient = new Report(stateAnswer, answer.toString());
 
         return reportToClient;
     }

@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * Class with 'min_by_id' command. Search and show flat with min id.
  */
 public class MinById {
-    public MinById(TreeMap<Integer, Flat> map) {
+    public MinById(Map<Integer, Flat> map) {
         try {
             Integer keyOfMinFlatById = searchMin(map);
             ExecuteRequest.answer.append(map.get(keyOfMinFlatById));
@@ -28,7 +28,7 @@ public class MinById {
      * @return key of object with min value
      * @throws NullMapException if collection is empty
      */
-    private Integer searchMin(TreeMap<Integer, Flat> map)
+    private Integer searchMin(Map<Integer, Flat> map)
             throws NullMapException{
         Integer keyNow = null;
         Integer keyOfMin = null;

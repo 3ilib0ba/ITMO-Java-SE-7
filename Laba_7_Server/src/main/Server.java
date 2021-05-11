@@ -8,6 +8,7 @@ import data.dao.DBManager;
 import data.netdata.Report;
 import data.netdata.Request;
 import data.workwithrequest.ExecuteRequest;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -17,6 +18,7 @@ import java.net.SocketException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class Server {
     private int PORT;
@@ -29,10 +31,18 @@ public class Server {
     private static final String DB_URL = "jdbc:postgresql://localhost:9999/studs";
     public static DBManager databaseManager;
 
+    private ExecutorService readTheRequest;
+    private ForkJoinPool executeRequest;
+    private ForkJoinPool answerGet;
+
     public Server(int port, Scanner scanner) {
         PORT = port;
         this.scanner = scanner;
         initDAO();
+
+        readTheRequest = Executors.newCachedThreadPool();
+        executeRequest = ForkJoinPool.commonPool();
+        answerGet = ForkJoinPool.commonPool();
     }
 
     private void initDAO() {
@@ -122,23 +132,28 @@ public class Server {
 
     public void clientRequest()
             throws ExitException {
-        // initialization
-        Request request = null;
         Report report = null;
-
         try {
-            byte[] accept = new byte[16384];
-            DatagramPacket getPacket = new DatagramPacket(accept, accept.length);
+            Callable<Request> taskToRead = this::readRequest;
+            Future<Request> requestFuture = readTheRequest.submit(taskToRead);
+            while (!requestFuture.isDone()) {
+            }
 
-            socket.receive(getPacket);          //Getting a new request from client
-            address = getPacket.getAddress();   //Save path to client
-            PORT = getPacket.getPort();
-            request = deserialize(getPacket);
-            report = ExecuteRequest.doingRequest(request, myMap);   //invoke the command
+            Runnable taskToExec = () -> {
+                try {
+                    ExecuteRequest.doingRequest(requestFuture.get(), myMap);   //invoke the command
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            };
+            executeRequest.invoke(ForkJoinTask.adapt(taskToExec));
+
+            Callable<Report> response = ExecuteRequest::makeReport;
+            report = answerGet.invoke(ForkJoinTask.adapt(response));
         } catch (ExitException e) {
             throw e;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         } finally {
             //Sending a report to client
             byte[] sendBuffer;
@@ -153,6 +168,23 @@ public class Server {
             }
 
         }
+    }
+
+    private Request readRequest() {
+        try {
+            byte[] accept = new byte[16384];
+            DatagramPacket getPacket = new DatagramPacket(accept, accept.length);
+
+            socket.receive(getPacket);          //Getting a new request from client
+            address = getPacket.getAddress();   //Save path to client
+            PORT = getPacket.getPort();
+            return deserialize(getPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Request deserialize(DatagramPacket getPacket) throws IOException, ClassNotFoundException {

@@ -6,6 +6,7 @@ import typesfiles.Flat;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -21,7 +22,7 @@ public class SaveCommand {
      * @param collection - saving collection
      * @param name       - name of file
      */
-    public static void saveTheCollection(TreeMap<Integer, Flat> collection, String name) {
+    public static void saveTheCollection(Map<Integer, Flat> collection, String name) {
         String path = "saves/";
         try (BufferedWriter bufWr = new BufferedWriter(new FileWriter(path + name + ".json"))) {
             bufWr.write(new Gson().toJson(collection));
@@ -37,7 +38,7 @@ public class SaveCommand {
      * @param map     - saving map
      * @param scanner - mod of saving
      */
-    public static void startSaveFile(TreeMap<Integer, Flat> map, Scanner scanner) {
+    public static void startSaveFile(Map<Integer, Flat> map, Scanner scanner) {
         //System.out.print("Input filename: ");
             String name = scanner.nextLine();
             new SaveCommand(map, name);
@@ -45,13 +46,13 @@ public class SaveCommand {
         HistoryCommand.addHistory("Save");
     }
 
-    public SaveCommand(TreeMap<Integer, Flat> collection) {
+    public SaveCommand(Map<Integer, Flat> collection) {
         String name = "save " + numericOfSave;
         saveTheCollection(collection, name);
         numericOfSave++;
     }
 
-    public SaveCommand(TreeMap<Integer, Flat> collection, String name) {
+    public SaveCommand(Map<Integer, Flat> collection, String name) {
         saveTheCollection(collection, name);
     }
 }
