@@ -106,6 +106,7 @@ public class Execute {
                             if (isFromFile) {
                                 new CommandInsert(newKey, map, false, SCANNER);
                             } else {
+                                System.out.println("not from file");
                                 new CommandInsert(newKey, map, false, addingFlat);
                             }
                         } catch (SQLException e) {
@@ -167,7 +168,13 @@ public class Execute {
 
                 case "clear":
                     if (commands.length == 1) {
-                        new ClearCommand(map.getMyMap());
+                        try {
+                            databaseManager.deleteByClient(map, client);
+                            new ClearCommand(map);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
                     } else {
                         throw new IllegalCommandException("Unknown clear_<...> command");
                     }

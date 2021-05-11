@@ -40,7 +40,14 @@ public class CommandInsert {
     }
 
     public CommandInsert(Integer newKey, MyTreeMap map, boolean fromUpdate, Flat addingFlat) {
-        map.addFlat(newKey, addingFlat); // Поместили квартиру в map
+        System.out.println(ID_MAX + " is noww Id max...generate");
+        if (fromUpdate) {
+            map.addFlat(newKey, addingFlat);
+            ID_MAX--;
+        } else {
+            addingFlat.setId(ID_MAX);
+            map.addFlat(newKey, addingFlat); // Поместили квартиру в map
+        }
         ExecuteRequest.answer.append("Successfully");
     }
 
@@ -57,6 +64,7 @@ public class CommandInsert {
 
         if (!fromUpdate) {
             id = ID_MAX;
+            System.out.println("!!!\n!!!\n!!!");
         } else {
             id = map.getMyMap().get(key).getId();
         }
@@ -256,6 +264,7 @@ public class CommandInsert {
 
     /**
      * Далее метод setHouse возвращает новый объект класса House
+     *
      * @return House
      * @throws InvalidArgExcaption - пробрасывание неверного формата для данных
      */

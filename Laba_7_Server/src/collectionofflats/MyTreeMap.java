@@ -43,7 +43,7 @@ public class MyTreeMap {
      */
     public void addToTree(TreeMap<Integer, Flat> addMap) {
         for (Integer key : addMap.keySet()) {
-            addMap.get(key).setId(ID_MAX);
+            addMap.get(key).setId(ID_MAX++);
             addFlat(key, addMap.get(key));
         }
         //System.out.println("добавлена мапа:\n" + addMap.toString());

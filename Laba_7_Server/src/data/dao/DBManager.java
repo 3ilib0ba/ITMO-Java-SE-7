@@ -15,6 +15,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Date;
 
+import static collectionofflats.MyTreeMap.ID_MAX;
+
 public class DBManager {
     private static DBManager instance;
 
@@ -49,6 +51,7 @@ public class DBManager {
             "name = ?, creationdate = ?, area = ?, numsofrooms = ?, numsofbaths = ?, " +
             "timetometro = ?, coordinates_id = ?, furnish_id = ?, house_id = ?, client_id = ? " +
             "WHERE id = ?";
+    private static final String DELETE_BY_CLIENT_ID_REQUEST = "DELETE FROM flats WHERE client_id = ? ";
 
 
     private DBManager(String url, String passwordServer, String usernameServer) {
@@ -116,6 +119,9 @@ public class DBManager {
 
     private Flat parseToFlat(ResultSet flat) throws SQLException {
         int id = flat.getInt(1);
+
+        ID_MAX = id;
+
         String name = flat.getString(2);
         Date dateCreate = flat.getDate(3);
         long area = flat.getLong(4);
@@ -171,7 +177,7 @@ public class DBManager {
                     "number of lifts = " + collectionDB.getString(20) + "\n" +
                     "number of flats = " + collectionDB.getString(21) + "\n");
             */
-            mapManager.addFlat(MyTreeMap.ID_MAX++, parseToFlat(collectionDB));
+            mapManager.addFlat(ID_MAX, parseToFlat(collectionDB));
         }
     }
 
@@ -249,7 +255,7 @@ public class DBManager {
             checkIdObj.setInt(1, idSwap);
             ResultSet result = checkIdObj.executeQuery();
             if (result.next()) {
-                if (client.idOfClient == result.getInt(11))
+                if (!(client.idOfClient == result.getInt(11)))
                     throw new NotClientObjectException("This flat isn't your");
             } else {
                 throw new InvalidArgExcaption("Flat with this ID not found...");
@@ -259,6 +265,8 @@ public class DBManager {
         }
 
         try {
+            System.out.println("Trying to update obj with id = " + idSwap);
+
             connection.setAutoCommit(false);
             int idCoord = insertNewCoordinates(updating.getCoordinates());
             int idHouse = insertNewHouse(updating.getHouse());
@@ -285,6 +293,13 @@ public class DBManager {
         } finally {
             connection.setAutoCommit(true);
         }
+    }
+
+    public void deleteByClient(MyTreeMap myMap, ClientIdentificate client)
+        throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_CLIENT_ID_REQUEST);
+        preparedStatement.setInt(1, client.idOfClient);
+        preparedStatement.execute();
     }
 }
 

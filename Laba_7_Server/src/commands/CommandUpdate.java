@@ -27,6 +27,7 @@ public class CommandUpdate {
         try {
             Integer keyOfUpd = checkId(idUpd, map.getMyMap());
             System.out.println(keyOfUpd);
+            addingFlat.setId(idUpd);
             new CommandInsert(keyOfUpd, map, true, addingFlat);
         } catch (InvalidArgExcaption e) {
             ExecuteRequest.answer.append(e.getMessage());

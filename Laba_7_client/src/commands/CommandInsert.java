@@ -43,7 +43,7 @@ public class CommandInsert {
         Furnish furnish; // Поле не может быть null
         House house;
 
-        id = ID_MAX;
+        id = ID_MAX++;
 
         try {
             name = setName();          // обработка имени
